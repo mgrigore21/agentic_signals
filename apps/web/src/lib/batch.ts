@@ -56,6 +56,7 @@ export async function loadBatch(): Promise<BatchSnapshot> {
       ruleSettleUs: number(measurement.rule_settle_us),
       finalErrorMv: number(measurement.final_error_mV),
       wobbleCount: number(measurement.wobble_count),
+      durationRequestedMs: number(measurement.duration_requested_ms),
       durationActualMs: number(measurement.duration_actual_ms),
     };
   });

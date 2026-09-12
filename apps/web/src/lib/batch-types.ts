@@ -24,6 +24,7 @@ export type BatchRun = {
   ruleSettleUs: number | null;
   finalErrorMv: number | null;
   wobbleCount: number | null;
+  durationRequestedMs: number | null;
   durationActualMs: number | null;
 };
 
