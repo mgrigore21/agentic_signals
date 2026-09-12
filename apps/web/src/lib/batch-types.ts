@@ -17,15 +17,19 @@ export type BatchRun = {
   id: string;
   measurable: boolean;
   rulesPass: boolean | null;
-  triageReason: string;
-  needsAttention: boolean;
   dtw: number | null;
+  dtwFlag: boolean | null;
   ruleDipMv: number | null;
   ruleSettleUs: number | null;
   finalErrorMv: number | null;
   wobbleCount: number | null;
+  secondDip: boolean | null;
+  lateActivity: boolean | null;
+  flat: boolean | null;
   durationRequestedMs: number | null;
   durationActualMs: number | null;
+  duplicateOf: string | null;
+  logExcerpt: string | null;
 };
 
 export type BatchSnapshot = {

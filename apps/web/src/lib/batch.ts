@@ -6,6 +6,18 @@ import type { BatchRun, BatchSnapshot } from "./batch-types";
 
 type CsvRow = Record<string, string>;
 const corpusRoot = path.resolve(process.cwd(), "../..", "corpus");
+const runtimeCorpusRoot = path.join(corpusRoot, "runtime");
+
+async function readRuntimeCorpusFile(filename: string) {
+  try {
+    return await readFile(path.join(runtimeCorpusRoot, filename), "utf8");
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+      return readFile(path.join(corpusRoot, filename), "utf8");
+    }
+    throw error;
+  }
+}
 
 function parseCsv(source: string): CsvRow[] {
   const rows: string[][] = [];
@@ -36,11 +48,15 @@ function number(value: string): number | null {
   return value === "" || !Number.isFinite(Number(value)) ? null : Number(value);
 }
 
+function text(value: string): string | null {
+  return value === "" ? null : value;
+}
+
 export async function loadBatch(): Promise<BatchSnapshot> {
   const [measurementsSource, dtwSource, accountingSource] = await Promise.all([
-    readFile(path.join(corpusRoot, "measurements.csv"), "utf8"),
-    readFile(path.join(corpusRoot, "dtw_results.csv"), "utf8"),
-    readFile(path.join(corpusRoot, "accounting.json"), "utf8"),
+    readRuntimeCorpusFile("measurements.csv"),
+    readRuntimeCorpusFile("dtw_results.csv"),
+    readRuntimeCorpusFile("accounting.json"),
   ]);
   const dtwByRun = new Map(parseCsv(dtwSource).map((row) => [row.run_id, row]));
   const runs: BatchRun[] = parseCsv(measurementsSource).map((measurement) => {
@@ -49,20 +65,25 @@ export async function loadBatch(): Promise<BatchSnapshot> {
       id: measurement.run_id,
       measurable: boolean(measurement.measurable) === true,
       rulesPass: boolean(measurement.rules_pass),
-      triageReason: measurement.triage_reason,
-      needsAttention: boolean(measurement.needs_attention) === true,
       dtw: number(dtw?.dtw ?? ""),
+      dtwFlag: boolean(dtw?.dtw_flag ?? ""),
       ruleDipMv: number(measurement.rule_dip_mV),
       ruleSettleUs: number(measurement.rule_settle_us),
       finalErrorMv: number(measurement.final_error_mV),
       wobbleCount: number(measurement.wobble_count),
+      secondDip: boolean(measurement.second_dip),
+      lateActivity: boolean(measurement.late_activity),
+      flat: boolean(measurement.flat),
       durationRequestedMs: number(measurement.duration_requested_ms),
       durationActualMs: number(measurement.duration_actual_ms),
+      duplicateOf: text(measurement.duplicate_of),
+      logExcerpt: text(measurement.log_excerpt),
     };
   });
   runs.sort((left, right) => {
     if (left.measurable !== right.measurable) return left.measurable ? 1 : -1;
-    if (left.needsAttention !== right.needsAttention) return left.needsAttention ? -1 : 1;
+    const dtwDifference = (right.dtw ?? -Number.MAX_VALUE) - (left.dtw ?? -Number.MAX_VALUE);
+    if (dtwDifference !== 0) return dtwDifference;
     return left.id.localeCompare(right.id);
   });
   const accounting = JSON.parse(accountingSource) as Record<string, number>;

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import type { BatchSnapshot, Dismissal } from "@/lib/batch-types";
+import type { BatchRun, BatchSnapshot, Dismissal } from "@/lib/batch-types";
+
+type TriageOutcome = { flag: boolean; reason: string };
 
 function ruleVerdict(value: boolean | null) {
   if (value === null) return "—";
@@ -17,6 +19,11 @@ function evidenceValue(value: number | null, unit = "", limit?: number) {
   return `${value}${unit ? ` ${unit}` : ""}${limit === undefined ? "" : ` (limit ${limit})`}`;
 }
 
+function compareDtw(left: BatchRun, right: BatchRun) {
+  const difference = (right.dtw ?? -Number.MAX_VALUE) - (left.dtw ?? -Number.MAX_VALUE);
+  return difference !== 0 ? difference : left.id.localeCompare(right.id);
+}
+
 export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
   const [selectedId, setSelectedId] = useState(batch.runs[0]?.id ?? "");
   const [dismissals, setDismissals] = useState<Dismissal[]>([]);
@@ -24,30 +31,34 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
   const [reason, setReason] = useState("");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
-  const [explanations, setExplanations] = useState<Record<string, string>>({});
-  const [explanationsLoading, setExplanationsLoading] = useState(true);
-  const [explanationsUnavailable, setExplanationsUnavailable] = useState(false);
+  const [triage, setTriage] = useState<Record<string, TriageOutcome>>({});
+  const [triageState, setTriageState] = useState<"loading" | "ready" | "unavailable">("loading");
   useEffect(() => {
     void fetch("/api/dismissals").then((response) => response.ok ? response.json() : []).then(setDismissals).catch(() => setNotice("Dismissals could not be loaded."));
   }, []);
   useEffect(() => {
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 15_000);
-    void fetch("/api/explain", { method: "POST", signal: controller.signal })
+    const timeout = window.setTimeout(() => controller.abort(), 65_000);
+    void fetch("/api/triage", { method: "POST", signal: controller.signal })
       .then(async (response) => {
-        if (!response.ok) throw new Error("Explanations unavailable.");
+        if (!response.ok) throw new Error("Triage unavailable.");
         return response.json() as Promise<unknown>;
       })
       .then((result) => {
-        if (!result || typeof result !== "object" || Array.isArray(result)) throw new Error("Explanations unavailable.");
-        setExplanations(result as Record<string, string>);
+        if (!result || typeof result !== "object" || Array.isArray(result)) throw new Error("Triage unavailable.");
+        setTriage(result as Record<string, TriageOutcome>); setTriageState("ready");
       })
-      .catch(() => setExplanationsUnavailable(true))
-      .finally(() => { setExplanationsLoading(false); window.clearTimeout(timeout); });
+      .catch(() => setTriageState("unavailable"))
+      .finally(() => window.clearTimeout(timeout));
     return () => { controller.abort(); window.clearTimeout(timeout); };
   }, []);
   const dismissedIds = useMemo(() => new Set(dismissals.map((dismissal) => dismissal.run_id)), [dismissals]);
-  const visibleRuns = showDismissed ? batch.runs : batch.runs.filter((run) => !dismissedIds.has(run.id));
+  const rankedRuns = useMemo(() => [...batch.runs].sort((left, right) => {
+    if (left.measurable !== right.measurable) return left.measurable ? 1 : -1;
+    if (triageState === "ready" && triage[left.id]?.flag !== triage[right.id]?.flag) return triage[left.id]?.flag ? -1 : 1;
+    return compareDtw(left, right);
+  }), [batch.runs, triage, triageState]);
+  const visibleRuns = showDismissed ? rankedRuns : rankedRuns.filter((run) => !dismissedIds.has(run.id));
   const selectedRun = batch.runs.find((run) => run.id === selectedId);
 
   async function dismiss() {
@@ -68,7 +79,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
       <header>
         <p className="ranked-eyebrow">OVERNIGHT TEST TRIAGE</p>
         <h1>Ranked runs</h1>
-        <p>{showDismissed ? `Showing all ${batch.runs.length} runs.` : `${visibleRuns.length} active runs shown.`} The order is: no measurable result, then needs attention, then the remainder.</p>
+        <p>{showDismissed ? `Showing all ${batch.runs.length} runs.` : `${visibleRuns.length} active runs shown.`} The order is: no measurable result, then agent flags by DTW distance, then the remainder by DTW distance.</p>
       </header>
       <details className="explainer" open>
         <summary>What am I looking at?</summary>
@@ -90,14 +101,14 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
       <section className="accounting-banner" aria-label="Batch accounting">
         <strong>{batch.accounting.launched} launched = {batch.accounting.analysed} analysed + {batch.accounting.failed} no result</strong>
       </section>
-      {explanationsLoading ? <p className="explanations-note">Generating explanations…</p> : null}
-      {explanationsUnavailable ? <p className="explanations-note">explanations unavailable</p> : null}
+      {triageState === "loading" ? <p className="explanations-note">Triaging all 150 runs…</p> : null}
+      {triageState === "unavailable" ? <p className="explanations-note">reasons unavailable</p> : null}
       <button type="button" className="dismissed-toggle" onClick={() => setShowDismissed((current) => !current)}>{dismissedIds.size} dismissed{showDismissed ? " — hide dismissed" : " — show dismissed"}</button>
       <div className="ranked-layout">
         <div className="ranked-table-wrap">
           <table>
           <thead>
-            <tr><th>Rank</th><th>run_id</th><th>rules_pass</th><th>triage_reason</th><th>dtw</th></tr>
+            <tr><th>Rank</th><th>run_id</th><th>rules_pass</th><th>reason</th><th>dtw</th></tr>
           </thead>
           <tbody>
             {visibleRuns.map((run, index) => (
@@ -105,7 +116,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
                 <td>{index + 1}</td>
                 <td><code>{run.id}</code></td>
                 <td>{ruleVerdict(run.rulesPass)}</td>
-                <td>{run.triageReason || "—"}{explanations[run.id] ? <p className="run-explanation">{explanations[run.id]}</p> : null}</td>
+                <td>{triage[run.id]?.reason ?? (triageState === "unavailable" ? "reasons unavailable" : "triaging…")}</td>
                 <td>{dtwValue(run.dtw)}</td>
               </tr>
             ))}
