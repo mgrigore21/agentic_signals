@@ -31,6 +31,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
   const [reason, setReason] = useState("");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
+  const [isTraceExpanded, setIsTraceExpanded] = useState(false);
   const [triage, setTriage] = useState<Record<string, TriageOutcome>>({});
   const [triageState, setTriageState] = useState<"loading" | "ready" | "unavailable">("loading");
   useEffect(() => {
@@ -38,7 +39,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
   }, []);
   useEffect(() => {
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 65_000);
+    const timeout = window.setTimeout(() => controller.abort(), 95_000);
     void fetch("/api/triage", { method: "POST", signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) throw new Error("Triage unavailable.");
@@ -126,7 +127,9 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
         <aside className="trace-preview" aria-live="polite">
           <p className="ranked-eyebrow">SELECTED RUN</p>
           <h2><code>{selectedId}</code></h2>
-          <img src={`/plots/runs/${selectedId}.png`} alt={`Voltage trace for ${selectedId}`} />
+          <button type="button" className="trace-image-button" onClick={() => setIsTraceExpanded(true)} aria-label={`Expand voltage trace for ${selectedId}`}>
+            <img src={`/plots/runs/${selectedId}.png`} alt={`Voltage trace for ${selectedId}`} />
+          </button>
           <div className="evidence-panel" aria-label="Selected run evidence">
             <p><strong>rules verdict:</strong> {selectedRun ? selectedRun.rulesPass === null ? "—" : selectedRun.rulesPass ? "cleared the rules" : "failed the rules" : "—"}</p>
             <p><strong>dip:</strong> {evidenceValue(selectedRun?.ruleDipMv ?? null, "mV", 150)}</p>
@@ -144,6 +147,10 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
           </div>
         </aside>
       </div>
+      {isTraceExpanded ? <div className="trace-lightbox" role="dialog" aria-modal="true" aria-label={`Expanded voltage trace for ${selectedId}`} onClick={() => setIsTraceExpanded(false)}>
+        <button type="button" className="trace-lightbox-close" onClick={() => setIsTraceExpanded(false)} aria-label="Close expanded trace">×</button>
+        <img src={`/plots/runs/${selectedId}.png`} alt={`Voltage trace for ${selectedId}`} onClick={(event) => event.stopPropagation()} />
+      </div> : null}
     </main>
   );
 }
