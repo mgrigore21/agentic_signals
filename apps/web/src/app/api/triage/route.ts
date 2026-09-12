@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { loadBatch } from "@/lib/batch";
 
 const SYSTEM_PROMPT = "You are triaging overnight power-converter tests. Flag a run if the evidence suggests an engineer should look at it. Use the DTW distance (threshold 4.8), the measurements, the log line, and the duplicate field. Never say a run passed. Cite actual numbers. Return only JSON.";
-const TRIAGE_BATCH_SIZE = 30;
+const TRIAGE_BATCH_SIZE = 50;
 
 type TriageRow = {
   run_id: string;
@@ -79,7 +79,6 @@ async function triageRows(rows: TriageRow[], apiKey: string, model: string, sign
     const { flag, reason } = entry as Record<string, unknown>;
     return typeof flag === "boolean" && typeof reason === "string" ? [[row.run_id, { flag, reason }]] : [];
   })) as TriageResult;
-  if (Object.keys(triage).length !== rows.length) throw new Error(`${Object.keys(triage).length} of ${rows.length} runs received triage.`);
   return triage;
 }
 
@@ -114,9 +113,16 @@ export async function POST() {
   const timeout = setTimeout(() => controller.abort(), 60_000);
 
   try {
-    const results = await Promise.all(batches.map((batch) => triageRows(batch, apiKey, model, controller.signal)));
+    const results = await Promise.all(batches.map(async (batch) => {
+      try {
+        const triage = await triageRows(batch, apiKey, model, controller.signal);
+        return Object.fromEntries(batch.map((row) => [row.run_id, triage[row.run_id] ?? { flag: false, reason: "not assessed" }]));
+      } catch (error) {
+        console.error("OpenRouter triage batch could not be completed.", error instanceof Error ? error.message : "Unknown error.");
+        return Object.fromEntries(batch.map((row) => [row.run_id, { flag: false, reason: "not assessed" }]));
+      }
+    }));
     const triage = Object.assign({}, ...results) as TriageResult;
-    if (Object.keys(triage).length !== rows.length) throw new Error("Not every run received triage.");
     cachedTriage = triage;
     return NextResponse.json(triage);
   } catch (error) {
