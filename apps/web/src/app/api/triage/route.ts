@@ -62,6 +62,7 @@ async function triageRows(rows: TriageRow[], apiKey: string, model: string, sign
         },
       ],
       response_format: responseFormat,
+      provider: { require_parameters: true },
       temperature: 0,
       max_tokens: 4000,
     }),
@@ -110,7 +111,7 @@ export async function POST() {
   }));
   const batches = Array.from({ length: Math.ceil(rows.length / TRIAGE_BATCH_SIZE) }, (_, index) => rows.slice(index * TRIAGE_BATCH_SIZE, (index + 1) * TRIAGE_BATCH_SIZE));
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60_000);
+  const timeout = setTimeout(() => controller.abort(), 90_000);
 
   try {
     const results = await Promise.all(batches.map(async (batch) => {
