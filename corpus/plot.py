@@ -14,7 +14,7 @@ V_NOM, BAND, T_STEP, RULE_W = 5000.0, 50.0, 1e-3, 2e-3
 INK, GRID = "#1b1b1f", "#d8d8de"
 OK, BAD, WARN = "#2f7d4f", "#c0392b", "#c98a12"
 
-df = pd.read_csv(OUT / "measurements.csv")
+df = pd.read_csv(OUT / "_measurements_with_labels.csv")
 
 
 def load(run_id):
@@ -53,7 +53,7 @@ for _, r in df.iterrows():
         dress(ax)
         ax.plot(t, v, lw=0.9, color=col)
         ax.set_ylim(V_NOM - 480, V_NOM + 360)
-    ax.set_title(f"{r['run_id']}  ·  {r['bucket']}", fontsize=7.5, color=INK, pad=4)
+    ax.set_title(r['run_id'], fontsize=7.5, color=INK, pad=4)
     fig.tight_layout()
     fig.savefig(SINGLES / f"{r['run_id']}.png", bbox_inches="tight")
     plt.close(fig)

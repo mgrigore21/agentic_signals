@@ -14,7 +14,7 @@ V_NOM, T_STOP, T_STEP = 5000.0, 10e-3, 1e-3
 DS = 250          # downsampled length
 BAND = 30         # Sakoe-Chiba band
 
-df = pd.read_csv(C / "measurements.csv")
+df = pd.read_csv(C / "_measurements_with_labels.csv")
 
 # ---------------------------------------------------------------- 1. folders
 CLASS_DOC = {
@@ -133,7 +133,8 @@ print(f"           robust median+5MAD = {THRESH:.1f}  <- used")
 d["dtw_flag"] = d["dtw"] > THRESH
 d.loc[d.dtw.isna(), "dtw_flag"] = False        # DTW simply has no opinion
 res = gt.merge(d, on="run_id")
-res.to_csv(C / "dtw_results.csv", index=False)
+res[["run_id", "dtw", "dtw_flag"]].to_csv(C / "dtw_results.csv", index=False)
+res.to_csv(C / "_dtw_results_with_labels.csv", index=False)   # offline only
 
 # ---------------------------------------------------------------- 3. scoring
 def score(sub, name):

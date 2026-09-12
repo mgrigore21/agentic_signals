@@ -333,10 +333,11 @@ def reason(r):
         return f"identical to {r['duplicate_of']} - setting never applied"
     if r.get("flat"):
         return "flat line - the kick never happened, so this tested nothing"
-    if r["bucket"] == "early_unknown":
-        return "ended before it settled - the pass verdict is not trustworthy"
     if r.get("stopped_early"):
-        return "ended early, but after the response had finished"
+        log = str(r.get("log_excerpt", "")).lower()
+        if "abort" in log or "error" in log:
+            return "solver aborted before the window ended - the pass verdict is not trustworthy"
+        return f"ended early at {r['duration_actual_ms']:.1f} ms, after the response had settled - check the log"
     if r.get("never_settled"):
         return "still moving when the rules stopped looking - never settled"
     if not r.get("rules_pass", True):
@@ -363,7 +364,9 @@ cols = ["run_id", "bucket", "status", "measurable", "rules_pass", "triage_reason
         "duration_requested_ms", "duration_actual_ms", "stopped_early",
         "duplicate_of", "sha1", "trace_path", "note", "log_excerpt"]
 df = df.reindex(columns=cols)
-df.to_csv(OUT / "measurements.csv", index=False)
+runtime_cols = [c for c in cols if c not in ("bucket", "note")]
+df[runtime_cols].to_csv(OUT / "measurements.csv", index=False)
+df.to_csv(OUT / "_measurements_with_labels.csv", index=False)   # offline only
 
 # accounting
 acc = dict(
