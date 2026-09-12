@@ -31,7 +31,10 @@ export async function POST() {
         model,
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: JSON.stringify(topRuns) },
+          {
+            role: "user",
+            content: `Return exactly one JSON object with each listed run_id as a key and its one-sentence explanation as the string value. Do not wrap the object in another property.\n\n${JSON.stringify(topRuns)}`,
+          },
         ],
         response_format: { type: "json_object" },
         temperature: 0,
@@ -50,6 +53,7 @@ export async function POST() {
       const sentence = (parsed as Record<string, unknown>)[run.run_id];
       return typeof sentence === "string" ? [[run.run_id, sentence]] : [];
     }));
+    if (Object.keys(explanations).length === 0) throw new Error("No explanations matched the requested run IDs.");
     return NextResponse.json(explanations);
   } catch {
     return NextResponse.json({ error: "Explanations unavailable." }, { status: 503 });
