@@ -20,6 +20,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
   const [explanations, setExplanations] = useState<Record<string, string>>({});
+  const [explanationsLoading, setExplanationsLoading] = useState(true);
   const [explanationsUnavailable, setExplanationsUnavailable] = useState(false);
   useEffect(() => {
     void fetch("/api/dismissals").then((response) => response.ok ? response.json() : []).then(setDismissals).catch(() => setNotice("Dismissals could not be loaded."));
@@ -37,7 +38,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
         setExplanations(result as Record<string, string>);
       })
       .catch(() => setExplanationsUnavailable(true))
-      .finally(() => window.clearTimeout(timeout));
+      .finally(() => { setExplanationsLoading(false); window.clearTimeout(timeout); });
     return () => { controller.abort(); window.clearTimeout(timeout); };
   }, []);
   const dismissedIds = useMemo(() => new Set(dismissals.map((dismissal) => dismissal.run_id)), [dismissals]);
@@ -66,6 +67,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
       <section className="accounting-banner" aria-label="Batch accounting">
         <strong>{batch.accounting.launched} launched = {batch.accounting.analysed} analysed + {batch.accounting.failed} no result</strong>
       </section>
+      {explanationsLoading ? <p className="explanations-note">Generating explanations…</p> : null}
       {explanationsUnavailable ? <p className="explanations-note">explanations unavailable</p> : null}
       <button type="button" className="dismissed-toggle" onClick={() => setShowDismissed((current) => !current)}>{dismissedIds.size} dismissed{showDismissed ? " — hide dismissed" : " — show dismissed"}</button>
       <div className="ranked-layout">

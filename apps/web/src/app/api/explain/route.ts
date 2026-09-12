@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { loadBatch } from "@/lib/batch";
 
 const SYSTEM_PROMPT = "You are reviewing overnight power-converter test results for an engineer. For each run, write ONE sentence saying what the numbers show and what the engineer should check. Cite the actual numbers. Never say a run passed or is fine; say 'nothing flagged' if there is nothing to say. Never give a score. Return only JSON.";
+let cachedExplanations: Record<string, string> | null = null;
 
 export async function POST() {
+  if (cachedExplanations) return NextResponse.json(cachedExplanations);
   const apiKey = process.env.OPENROUTER_API_KEY;
   const model = process.env.MODEL;
   if (!apiKey || !model) return NextResponse.json({ error: "Explanations unavailable." }, { status: 503 });
@@ -53,7 +55,8 @@ export async function POST() {
       const sentence = (parsed as Record<string, unknown>)[run.run_id];
       return typeof sentence === "string" ? [[run.run_id, sentence]] : [];
     }));
-    if (Object.keys(explanations).length === 0) throw new Error("No explanations matched the requested run IDs.");
+    if (Object.keys(explanations).length !== topRuns.length) throw new Error("Not every requested run received an explanation.");
+    cachedExplanations = explanations;
     return NextResponse.json(explanations);
   } catch {
     return NextResponse.json({ error: "Explanations unavailable." }, { status: 503 });
