@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { BatchRun, BatchSnapshot, Dismissal } from "@/lib/batch-types";
 
 type TriageOutcome = { flag: boolean; reason: string };
+type ExpandedImage = { src: string; alt: string };
 
 function ruleVerdict(value: boolean | null) {
   if (value === null) return "—";
@@ -31,7 +32,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
   const [reason, setReason] = useState("");
   const [notice, setNotice] = useState("");
   const [saving, setSaving] = useState(false);
-  const [isTraceExpanded, setIsTraceExpanded] = useState(false);
+  const [expandedImage, setExpandedImage] = useState<ExpandedImage | null>(null);
   const [triage, setTriage] = useState<Record<string, TriageOutcome>>({});
   const [triageState, setTriageState] = useState<"loading" | "ready" | "unavailable">("loading");
   useEffect(() => {
@@ -104,7 +105,9 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
             </ol>
             <p>If the agent is unavailable, the list falls back to shape distance alone, and says so.</p>
           </div>
-          <img src="/plots/passes_but_wrong.png" alt="Six traces that cleared both rules but still look wrong" />
+          <button type="button" className="trace-image-button" onClick={() => setExpandedImage({ src: "/plots/passes_but_wrong.png", alt: "Six traces that cleared both rules but still look wrong" })} aria-label="Expand reference traces">
+            <img src="/plots/passes_but_wrong.png" alt="Six traces that cleared both rules but still look wrong" />
+          </button>
         </div>
       </details>
       <section className="accounting-banner" aria-label="Batch accounting">
@@ -135,7 +138,7 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
         <aside className="trace-preview" aria-live="polite">
           <p className="ranked-eyebrow">SELECTED RUN</p>
           <h2><code>{selectedId}</code></h2>
-          <button type="button" className="trace-image-button" onClick={() => setIsTraceExpanded(true)} aria-label={`Expand voltage trace for ${selectedId}`}>
+          <button type="button" className="trace-image-button" onClick={() => setExpandedImage({ src: `/plots/runs/${selectedId}.png`, alt: `Voltage trace for ${selectedId}` })} aria-label={`Expand voltage trace for ${selectedId}`}>
             <img src={`/plots/runs/${selectedId}.png`} alt={`Voltage trace for ${selectedId}`} />
           </button>
           <div className="evidence-panel" aria-label="Selected run evidence">
@@ -155,9 +158,9 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
           </div>
         </aside>
       </div>
-      {isTraceExpanded ? <div className="trace-lightbox" role="dialog" aria-modal="true" aria-label={`Expanded voltage trace for ${selectedId}`} onClick={() => setIsTraceExpanded(false)}>
-        <button type="button" className="trace-lightbox-close" onClick={() => setIsTraceExpanded(false)} aria-label="Close expanded trace">×</button>
-        <img src={`/plots/runs/${selectedId}.png`} alt={`Voltage trace for ${selectedId}`} onClick={(event) => event.stopPropagation()} />
+      {expandedImage ? <div className="trace-lightbox" role="dialog" aria-modal="true" aria-label={`Expanded ${expandedImage.alt}`} onClick={() => setExpandedImage(null)}>
+        <button type="button" className="trace-lightbox-close" onClick={() => setExpandedImage(null)} aria-label="Close expanded image">×</button>
+        <img src={expandedImage.src} alt={expandedImage.alt} onClick={(event) => event.stopPropagation()} />
       </div> : null}
     </main>
   );
