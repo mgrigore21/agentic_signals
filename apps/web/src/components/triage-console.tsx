@@ -75,8 +75,14 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
         <div className="explainer-content">
           <div>
             <p>Every night, tests kick a power converter and record how its output voltage responds for 10 ms. A healthy response dips, recovers, and holds steady. Two automated rules check every test: how far it dipped, and how fast it recovered. Everything that clears both is normally never looked at again.</p>
-            <p>This console does three things the rules don't. It accounts for every test that was launched, including the ones that produced no result. It ranks every run and gives a reason — nothing is hidden. And it flags runs that cleared both rules but still look wrong: a second dip, a settle to the wrong voltage, a flat line where the test never ran. The six traces below all cleared both rules.</p>
-            <p>The engineer decides. Any flag can be dismissed with a reason, and that reason is remembered.</p>
+            <p>How this console works, in order:</p>
+            <ol>
+              <li><strong>Measure.</strong> Every trace is turned into numbers: dip, recovery time, final level, movements after 3 ms, recorded length. Plain arithmetic, same answer every time.</li>
+              <li><strong>Compare shapes.</strong> Each trace is matched against a reference built from the healthy ones (dynamic time warping). Anything far from the reference is flagged. This catches every hidden shape problem — a second dip, a settle to the wrong voltage, a flat line where the test never ran. The six traces below all cleared both rules and were all caught here.</li>
+              <li><strong>Look beyond the shape.</strong> Shape comparison cannot see a duplicate (it's a perfectly healthy shape), a dead run (there's no shape at all), or the difference between a run that stopped early after settling and one whose solver aborted mid-test. Those come from the file hash, the recorded length, and the log line — not the curve.</li>
+              <li><strong>The agent writes the reason.</strong> It reads the numbers, the shape score, and the log, and writes one sentence per flagged run saying what the evidence shows. It never says a run passed. It never invents a number.</li>
+              <li><strong>The engineer decides.</strong> Every run stays in the list, ranked, never hidden. Any flag can be dismissed with a reason, and that reason is remembered.</li>
+            </ol>
           </div>
           <img src="/plots/passes_but_wrong.png" alt="Six traces that cleared both rules but still look wrong" />
         </div>
