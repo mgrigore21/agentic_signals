@@ -90,11 +90,19 @@ export function TriageConsole({ batch }: { batch: BatchSnapshot }) {
             <p>How this console works, in order:</p>
             <ol>
               <li><strong>Measure.</strong> Every trace is turned into numbers: dip, recovery time, final level, movements after 3 ms, recorded length. Plain arithmetic, same answer every time.</li>
-              <li><strong>Compare shapes.</strong> Each trace is matched against a reference built from the healthy ones (dynamic time warping). Anything far from the reference is flagged. This catches every hidden shape problem — a second dip, a settle to the wrong voltage, a flat line where the test never ran. The six traces below all cleared both rules and were all caught here.</li>
-              <li><strong>Look beyond the shape.</strong> Shape comparison cannot see a duplicate (it's a perfectly healthy shape), a dead run (there's no shape at all), or the difference between a run that stopped early after settling and one whose solver aborted mid-test. Those come from the file hash, the recorded length, and the log line — not the curve.</li>
-              <li><strong>The agent writes the reason.</strong> It reads the numbers, the shape score, and the log, and writes one sentence per flagged run saying what the evidence shows. It never says a run passed. It never invents a number.</li>
-              <li><strong>The engineer decides.</strong> Every run stays in the list, ranked, never hidden. Any flag can be dismissed with a reason, and that reason is remembered.</li>
+              <li><strong>Compare shapes.</strong> Each trace is matched against a reference built from the healthy ones (dynamic time warping) and gets a distance score. Above 4.8 is far from normal. This catches every hidden shape problem — a second dip, a settle to the wrong voltage, a flat line where the test never ran. The six traces below all cleared both rules and all score far from the reference.</li>
+              <li><strong>Look beyond the shape.</strong> Shape comparison cannot see a duplicate (it's a perfectly healthy shape), a dead run (there's no shape at all), or the difference between a run that stopped early after settling and one whose solver aborted mid-test. That evidence comes from the file hash, the recorded length, and the log line — not the curve.</li>
+              <li><strong>The agent decides and explains.</strong> For every run it receives the numbers, the shape score, the file facts, and the log line — and nothing else. No labels, no pre-written verdicts. It decides whether an engineer should look, and writes one sentence citing the evidence. It never says a run passed. It never invents a number.</li>
+              <li><strong>Ranking.</strong> The list is ordered so the most urgent is first:
+                <ul>
+                  <li>runs with no usable result come first — a missing result is worse than a bad one, because nothing is known about that test;</li>
+                  <li>then every run the agent flagged, ordered by shape distance, largest first;</li>
+                  <li>then everything else, same order. Nothing is removed. The list goes all the way to 150.</li>
+                </ul>
+              </li>
+              <li><strong>The engineer decides.</strong> Any flag can be dismissed with a reason. The reason is stored, survives a refresh, and the next person can see it.</li>
             </ol>
+            <p>If the agent is unavailable, the list falls back to shape distance alone, and says so.</p>
           </div>
           <img src="/plots/passes_but_wrong.png" alt="Six traces that cleared both rules but still look wrong" />
         </div>
