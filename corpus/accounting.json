@@ -1,0 +1,10 @@
+{
+  "launched": 150,
+  "analysed": 144,
+  "failed": 6,
+  "stopped_early": 15,
+  "duplicates": 6,
+  "rules_pass": 107,
+  "rules_fail": 37,
+  "pass_but_flagged": 54
+}

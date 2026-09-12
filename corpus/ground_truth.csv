@@ -1,0 +1,151 @@
+run_id,bucket,rules_pass,measurable,triage_reason,duplicate_of,note,should_flag,hidden_from_rules
+run_001,clean,True,True,nothing flagged,,well behaved,False,False
+run_002,clean,True,True,nothing flagged,,well behaved,False,False
+run_003,clean,True,True,nothing flagged,,well behaved,False,False
+run_004,clean,True,True,nothing flagged,,well behaved,False,False
+run_005,clean,True,True,nothing flagged,,well behaved,False,False
+run_006,clean,True,True,nothing flagged,,well behaved,False,False
+run_007,clean,True,True,nothing flagged,,well behaved,False,False
+run_008,clean,True,True,nothing flagged,,well behaved,False,False
+run_009,clean,True,True,nothing flagged,,well behaved,False,False
+run_010,clean,True,True,nothing flagged,,well behaved,False,False
+run_011,clean,True,True,nothing flagged,,well behaved,False,False
+run_012,clean,True,True,nothing flagged,,well behaved,False,False
+run_013,clean,True,True,nothing flagged,,well behaved,False,False
+run_014,clean,True,True,nothing flagged,,well behaved,False,False
+run_015,clean,True,True,nothing flagged,,well behaved,False,False
+run_016,clean,True,True,nothing flagged,,well behaved,False,False
+run_017,clean,True,True,nothing flagged,,well behaved,False,False
+run_018,clean,True,True,nothing flagged,,well behaved,False,False
+run_019,clean,True,True,nothing flagged,,well behaved,False,False
+run_020,clean,True,True,nothing flagged,,well behaved,False,False
+run_021,clean,True,True,nothing flagged,,well behaved,False,False
+run_022,clean,True,True,nothing flagged,,well behaved,False,False
+run_023,clean,True,True,nothing flagged,,well behaved,False,False
+run_024,clean,True,True,nothing flagged,,well behaved,False,False
+run_025,clean,True,True,nothing flagged,,well behaved,False,False
+run_026,clean,True,True,nothing flagged,,well behaved,False,False
+run_027,clean,True,True,nothing flagged,,well behaved,False,False
+run_028,clean,True,True,nothing flagged,,well behaved,False,False
+run_029,clean,True,True,nothing flagged,,well behaved,False,False
+run_030,clean,True,True,nothing flagged,,well behaved,False,False
+run_031,clean,True,True,nothing flagged,,well behaved,False,False
+run_032,clean,True,True,nothing flagged,,well behaved,False,False
+run_033,clean,True,True,nothing flagged,,well behaved,False,False
+run_034,clean,True,True,nothing flagged,,well behaved,False,False
+run_035,clean,True,True,nothing flagged,,well behaved,False,False
+run_036,clean,True,True,nothing flagged,,well behaved,False,False
+run_037,clean,True,True,nothing flagged,,well behaved,False,False
+run_038,clean,True,True,nothing flagged,,well behaved,False,False
+run_039,clean,True,True,nothing flagged,,well behaved,False,False
+run_040,clean,True,True,nothing flagged,,well behaved,False,False
+run_041,clean,True,True,nothing flagged,,well behaved,False,False
+run_042,clean,True,True,nothing flagged,,well behaved,False,False
+run_043,clean,True,True,nothing flagged,,well behaved,False,False
+run_044,clean,True,True,nothing flagged,,well behaved,False,False
+run_045,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_046,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_047,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_048,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_049,clean,True,True,passes with only 6% margin,,healthy but noisy - real data looks like this,True,True
+run_050,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_051,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_052,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_053,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_054,clean,True,True,nothing flagged,,healthy but noisy - real data looks like this,False,False
+run_055,passes_but_wrong,True,True,dipped a second time after the rules stopped looking,,"recovers, then dips a second time at ~4 ms",True,True
+run_056,passes_but_wrong,True,True,dipped a second time after the rules stopped looking,,"recovers, then dips a second time at ~4 ms",True,True
+run_057,passes_but_wrong,True,True,dipped a second time after the rules stopped looking,,"recovers, then dips a second time at ~4 ms",True,True
+run_058,passes_but_wrong,True,True,dipped a second time after the rules stopped looking,,"recovers, then dips a second time at ~4 ms",True,True
+run_059,passes_but_wrong,True,True,dipped a second time after the rules stopped looking,,"recovers, then dips a second time at ~4 ms",True,True
+run_060,passes_but_wrong,True,True,dipped a second time after the rules stopped looking,,"recovers, then dips a second time at ~4 ms",True,True
+run_061,passes_but_wrong,True,True,dipped a second time after the rules stopped looking,,"recovers, then dips a second time at ~4 ms",True,True
+run_062,passes_but_wrong,True,True,dipped a second time after the rules stopped looking,,"recovers, then dips a second time at ~4 ms",True,True
+run_063,passes_but_wrong,True,True,settled at the wrong level (-255 mV off),,settles smoothly to the wrong level (-255 mV),True,True
+run_064,passes_but_wrong,True,True,settled at the wrong level (+214 mV off),,settles smoothly to the wrong level (+214 mV),True,True
+run_065,passes_but_wrong,True,True,settled at the wrong level (-211 mV off),,settles smoothly to the wrong level (-211 mV),True,True
+run_066,passes_but_wrong,True,True,settled at the wrong level (+248 mV off),,settles smoothly to the wrong level (+248 mV),True,True
+run_067,passes_but_wrong,True,True,never stopped moving (15 wobbles),,"never stops wobbling, each wobble under the limit",True,True
+run_068,passes_but_wrong,True,True,never stopped moving (16 wobbles),,"never stops wobbling, each wobble under the limit",True,True
+run_069,passes_but_wrong,True,True,never stopped moving (17 wobbles),,"never stops wobbling, each wobble under the limit",True,True
+run_070,passes_but_wrong,True,True,"flat line - the kick never happened, so this tested nothing",,"the kick never happened - perfect score, zero information",True,True
+run_071,passes_but_wrong,True,True,"flat line - the kick never happened, so this tested nothing",,"the kick never happened - perfect score, zero information",True,True
+run_072,passes_but_wrong,True,True,"flat line - the kick never happened, so this tested nothing",,"the kick never happened - perfect score, zero information",True,True
+run_073,passes_but_wrong,True,True,"quiet, then started moving again late in the window",,"quiet until ~7 ms, then starts moving again",True,True
+run_074,passes_but_wrong,True,True,"quiet, then started moving again late in the window",,"quiet until ~7 ms, then starts moving again",True,True
+run_075,marginal_pass,True,True,passes with only 5% margin,,"passes, but with almost no margin left",True,True
+run_076,marginal_pass,True,True,passes with only 2% margin,,"passes, but with almost no margin left",True,True
+run_077,marginal_pass,True,True,passes with only 6% margin,,"passes, but with almost no margin left",True,True
+run_078,marginal_pass,True,True,passes with only 4% margin,,"passes, but with almost no margin left",True,True
+run_079,marginal_pass,True,True,passes with only 2% margin,,"passes, but with almost no margin left",True,True
+run_080,marginal_pass,True,True,passes with only 8% margin,,"passes, but with almost no margin left",True,True
+run_081,marginal_pass,True,True,passes with only 6% margin,,"passes, but with almost no margin left",True,True
+run_082,marginal_pass,True,True,passes with only 4% margin,,"passes, but with almost no margin left",True,True
+run_083,marginal_pass,True,True,passes with only 6% margin,,"passes, but with almost no margin left",True,True
+run_084,marginal_pass,True,True,passes with only 4% margin,,"passes, but with almost no margin left",True,True
+run_085,marginal_pass,True,True,passes with only 3% margin,,"passes, but with almost no margin left",True,True
+run_086,marginal_pass,True,True,passes with only 2% margin,,"passes, but with almost no margin left",True,True
+run_087,early_safe,True,True,"ended early, but after the response had finished",,ended after everything interesting had finished,True,True
+run_088,early_safe,True,True,"ended early, but after the response had finished",,ended after everything interesting had finished,True,True
+run_089,early_safe,True,True,"ended early, but after the response had finished",,ended after everything interesting had finished,True,True
+run_090,early_safe,True,True,"ended early, but after the response had finished",,ended after everything interesting had finished,True,True
+run_091,early_safe,True,True,"ended early, but after the response had finished",,ended after everything interesting had finished,True,True
+run_092,early_safe,True,True,"ended early, but after the response had finished",,ended after everything interesting had finished,True,True
+run_093,early_safe,True,True,"ended early, but after the response had finished",,ended after everything interesting had finished,True,True
+run_094,early_safe,True,True,"ended early, but after the response had finished",,ended after everything interesting had finished,True,True
+run_095,early_unknown,True,True,ended before it settled - the pass verdict is not trustworthy,,ended BEFORE the trouble that the full run would have shown,True,True
+run_096,early_unknown,True,True,ended before it settled - the pass verdict is not trustworthy,,ended BEFORE the trouble that the full run would have shown,True,True
+run_097,early_unknown,True,True,ended before it settled - the pass verdict is not trustworthy,,ended BEFORE the trouble that the full run would have shown,True,True
+run_098,early_unknown,True,True,ended before it settled - the pass verdict is not trustworthy,,ended BEFORE the trouble that the full run would have shown,True,True
+run_099,early_unknown,True,True,ended before it settled - the pass verdict is not trustworthy,,ended BEFORE the trouble that the full run would have shown,True,True
+run_100,early_unknown,True,True,ended before it settled - the pass verdict is not trustworthy,,ended BEFORE the trouble that the full run would have shown,True,True
+run_101,early_unknown,True,True,ended before it settled - the pass verdict is not trustworthy,,ended BEFORE the trouble that the full run would have shown,True,True
+run_102,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_103,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_104,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_105,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_106,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_107,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_108,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_109,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_110,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_111,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_112,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_113,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_114,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_115,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_116,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_117,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_118,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_119,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_120,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_121,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_122,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_123,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_124,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_125,fails_clear,False,True,still moving when the rules stopped looking - never settled,,rings for far too long,True,False
+run_126,fails_clear,False,True,fails the existing rules,,dip far beyond the limit,True,False
+run_127,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_128,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_129,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_130,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_131,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_132,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_133,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_134,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_135,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_136,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_137,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_138,marginal_fail,False,True,fails the existing rules,,"just over the limit - a re-spec conversation, not a bug",True,False
+run_139,dead,,False,no output produced,,no output file written,True,False
+run_140,dead,,False,no output produced,,no output file written,True,False
+run_141,dead,,False,unusable values in trace,,values go missing part way through,True,False
+run_142,dead,,False,unusable values in trace,,all zeros - never powered up,True,False
+run_143,dead,,False,unusable values in trace,,"impossible spike, numerical artefact",True,False
+run_144,dead,,False,no output produced,,job never started,True,False
+run_145,duplicate,True,True,identical to run_013 - setting never applied,run_013,byte-identical to run_013 - the swept setting never applied,True,True
+run_146,duplicate,True,True,identical to run_008 - setting never applied,run_008,byte-identical to run_008 - the swept setting never applied,True,True
+run_147,duplicate,True,True,identical to run_027 - setting never applied,run_027,byte-identical to run_027 - the swept setting never applied,True,True
+run_148,duplicate,True,True,identical to run_048 - setting never applied,run_048,byte-identical to run_048 - the swept setting never applied,True,True
+run_149,duplicate,True,True,identical to run_007 - setting never applied,run_007,byte-identical to run_007 - the swept setting never applied,True,True
+run_150,duplicate,True,True,identical to run_037 - setting never applied,run_037,byte-identical to run_037 - the swept setting never applied,True,True

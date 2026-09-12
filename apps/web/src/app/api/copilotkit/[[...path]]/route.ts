@@ -22,10 +22,11 @@ import {
   createCopilotHonoHandler,
 } from "@copilotkit/runtime/v2";
 import { makeAgent } from "agent-core";
+import { BATCH_TRIAGE_PROMPT } from "@/lib/batch-agent-prompt";
 
 // Web writes use /api/followups after a browser approval. Never expose raw MCP writes here.
 const runtime = new CopilotRuntime({
-  agents: () => ({ default: makeAgent(randomUUID(), { workplace: false }) }),
+  agents: () => ({ default: makeAgent(randomUUID(), { workplace: false, prompt: BATCH_TRIAGE_PROMPT }) }),
 });
 
 const app = createCopilotHonoHandler({

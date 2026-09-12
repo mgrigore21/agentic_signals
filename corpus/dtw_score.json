@@ -1,0 +1,26 @@
+{
+  "threshold_robust": 4.841133848681981,
+  "threshold_naive": 6.687063976050636,
+  "summary": [
+    {
+      "scope": "all 150",
+      "n": 150,
+      "TP": 67,
+      "FN": 30,
+      "FP": 2,
+      "TN": 51,
+      "recall": 0.691,
+      "precision": 0.971
+    },
+    {
+      "scope": "only runs the rules passed",
+      "n": 107,
+      "TP": 30,
+      "FN": 24,
+      "FP": 2,
+      "TN": 51,
+      "recall": 0.556,
+      "precision": 0.938
+    }
+  ]
+}
